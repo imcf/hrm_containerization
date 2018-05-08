@@ -45,6 +45,11 @@ BASEDIR=/scratch/containers
 TGT_ROOT="$BASEDIR/$VM_HOSTNAME/rootfs"
 TGT_LOCALE="en_US.UTF-8"
 
+
+#############################################################
+# LXC base setup
+#############################################################
+
 BRIDGE_IP=$(ip -o -f inet addr show lxcbr0 | sed -n 's,.*inet \([0-9\.]*\)/.*,\1,p')
 
 echo SUITE=$SUITE
@@ -126,8 +131,13 @@ cp $AUTH_KEYS $TGT_ROOT/root/.ssh/authorized_keys
 # clean up the script blocking dpkg from triggering daemon starts:
 rm -f $TGT_ROOT/usr/sbin/policy-rc.d
 
+
+
+#############################################################
+# finish
+#############################################################
 echo
 echo "Use the following commands to start it and/or check its status:"
 echo "  # lxc-start --lxcpath=$BASEDIR --name=$VM_HOSTNAME -d"
 echo "  # lxc-ls --lxcpath=$BASEDIR --fancy"
-echo "  # ssh -i ${AUTH_KEYS/.pub/} root@$VM_HOSTNAME"
+echo "  # ssh -i ${AUTH_KEYS/.pub/}  root@$VM_HOSTNAME"
