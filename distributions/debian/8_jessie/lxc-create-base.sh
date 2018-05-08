@@ -158,12 +158,12 @@ chroot $TGT_ROOT useradd hrm --create-home --system --gid hrm || true
 chroot $TGT_ROOT usermod www-data --append --groups hrm
 
 # create data dir, set permissions:
-chroot $TGT_ROOT mkdir -pv $HRM_DATA
-chroot $TGT_ROOT mkdir -pv $HRM_LOG
-chroot $TGT_ROOT chown -Rv hrm:hrm ${HRM_DATA}
-chroot $TGT_ROOT chmod -Rv u+s,g+ws ${HRM_DATA}
-chroot $TGT_ROOT chown -Rv hrm:hrm ${HRM_LOG}
-chroot $TGT_ROOT chmod -Rv u+s,g+ws ${HRM_LOG}
+chroot $TGT_ROOT mkdir -p $HRM_DATA
+chroot $TGT_ROOT mkdir -p $HRM_LOG
+chroot $TGT_ROOT chown -R hrm:hrm ${HRM_DATA}
+chroot $TGT_ROOT chmod -R u+s,g+ws ${HRM_DATA}
+chroot $TGT_ROOT chown -R hrm:hrm ${HRM_LOG}
+chroot $TGT_ROOT chmod -R u+s,g+ws ${HRM_LOG}
 
 # extract hrm package:
 HRM_ZIP_PKG=$(dirname $0)/hrm.zip
