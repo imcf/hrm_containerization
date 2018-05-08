@@ -127,7 +127,7 @@ chroot $TGT_ROOT eatmydata update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ### chroot $TGT_ROOT eatmydata apt-get clean
 
 # configure ssh-access for the root account
-mkdir $TGT_ROOT/root/.ssh
+mkdir -pv $TGT_ROOT/root/.ssh
 cp $AUTH_KEYS $TGT_ROOT/root/.ssh/authorized_keys
 
 # clean up the script blocking dpkg from triggering daemon starts:
