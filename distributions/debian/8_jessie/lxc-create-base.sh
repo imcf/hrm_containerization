@@ -134,6 +134,38 @@ cp $AUTH_KEYS $TGT_ROOT/root/.ssh/authorized_keys
 rm -f $TGT_ROOT/usr/sbin/policy-rc.d
 
 
+#############################################################
+# HRM setup
+#############################################################
+source $(dirname $0)/hrm_defaults.inc.sh
+
+# user / group setup:
+chroot $TGT_ROOT groupadd --system hrm || true
+chroot $TGT_ROOT useradd hrm --create-home --system --gid hrm || true
+chroot $TGT_ROOT usermod www-data --append --groups hrm
+
+# create data dir, set permissions:
+chroot $TGT_ROOT mkdir -pv $HRM_DATA
+chroot $TGT_ROOT mkdir -pv $HRM_LOG
+chroot $TGT_ROOT chown -Rv hrm:hrm ${HRM_DATA}
+chroot $TGT_ROOT chmod -Rv u+s,g+ws ${HRM_DATA}
+chroot $TGT_ROOT chown -Rv hrm:hrm ${HRM_LOG}
+chroot $TGT_ROOT chmod -Rv u+s,g+ws ${HRM_LOG}
+
+# extract hrm package:
+HRM_ZIP_PKG=$(dirname $0)/hrm.zip
+eatmydata unzip -q $HRM_ZIP_PKG -d $TGT_ROOT/$WWW_ROOT
+echo "Successfully extracted [$HRM_ZIP_PKG] to [$TGT_ROOT/$WWW_ROOT]"
+
+# enable default configuration:
+chroot $TGT_ROOT cp -v $HRM_SAMPLES/hrm.conf.sample /etc/hrm.conf
+chroot $TGT_ROOT cp -v $HRM_SAMPLES/hrm_server_config.inc.sample $HRM_CONFIG/hrm_server_config.inc
+chroot $TGT_ROOT ln -sv hrm_server_config.inc $HRM_CONFIG/hrm_client_config.inc
+
+
+# install hrmd systemd unit file:
+chroot $TGT_ROOT cp -v $HRM_RESRC/systemd/hrmd.service /etc/systemd/system/
+
 
 #############################################################
 # finish
