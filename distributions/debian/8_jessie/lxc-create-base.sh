@@ -86,6 +86,21 @@ source $(dirname $0)/debian_defaults.inc.sh
 # ensure hostname resolution is working
 echo "127.0.1.1 $VM_HOSTNAME.local $VM_HOSTNAME" >> $TGT_ROOT/etc/hosts
 
+# prevent sshd's stupid behaviour of overriding the locale environment:
+sed -i 's,^AcceptEnv,#AcceptEnv,' $TGT_ROOT/etc/ssh/sshd_config
+# configure default locale
+sed -i "s,^# $TGT_LOCALE,$TGT_LOCALE," $TGT_ROOT/etc/locale.gen
+chroot $TGT_ROOT eatmydata locale-gen
+chroot $TGT_ROOT eatmydata update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+# configure ssh-access for the root account
+mkdir -pv $TGT_ROOT/root/.ssh
+cp $AUTH_KEYS $TGT_ROOT/root/.ssh/authorized_keys
+
+
+#############################################################
+# HRM dependencies
+#############################################################
 # prepare installation of packages requiring configuration:
 echo "
 mysql-server mysql-server/root_password password $MYSQL_ROOTPW
@@ -116,19 +131,6 @@ chroot $TGT_ROOT eatmydata apt-get -y install \
     libfontconfig1 \
     libx11-6 \
     libxft2
-
-# prevent sshd's stupid behaviour of overriding the locale environment:
-sed -i 's,^AcceptEnv,#AcceptEnv,' $TGT_ROOT/etc/ssh/sshd_config
-# configure default locale
-sed -i "s,^# $TGT_LOCALE,$TGT_LOCALE," $TGT_ROOT/etc/locale.gen
-chroot $TGT_ROOT eatmydata locale-gen
-chroot $TGT_ROOT eatmydata update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-# clean up downloaded package cache:
-### chroot $TGT_ROOT eatmydata apt-get clean
-
-# configure ssh-access for the root account
-mkdir -pv $TGT_ROOT/root/.ssh
-cp $AUTH_KEYS $TGT_ROOT/root/.ssh/authorized_keys
 
 # clean up the script blocking dpkg from triggering daemon starts:
 rm -f $TGT_ROOT/usr/sbin/policy-rc.d
@@ -170,6 +172,8 @@ chroot $TGT_ROOT cp -v $HRM_RESRC/systemd/hrmd.service /etc/systemd/system/
 #############################################################
 # finish
 #############################################################
+# clean up downloaded package cache:
+chroot $TGT_ROOT eatmydata apt-get clean
 echo
 echo "Use the following commands to start it and/or check its status:"
 echo "  # lxc-start --lxcpath=$BASEDIR --name=$VM_HOSTNAME -d"
