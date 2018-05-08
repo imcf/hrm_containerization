@@ -181,7 +181,7 @@ chroot $TGT_ROOT cp -v $HRM_RESRC/systemd/hrmd.service /etc/systemd/system/
 
 
 #############################################################
-# prepare first startup
+# prepare finalization scripts to be run after startup
 #############################################################
 mkdir -v $TGT_ROOT/home/hrm/_hrm_setup
 cp -vL $(dirname $0)/hrm_defaults.inc.sh $TGT_ROOT/home/hrm/_hrm_setup/
