@@ -132,6 +132,9 @@ chroot $TGT_ROOT eatmydata apt-get -y install \
     libx11-6 \
     libxft2
 
+# explicitly set the timezone for PHP:
+sed -i 's,^;date.timezone =,date.timezone = "Europe/Zurich",' $TGT_ROOT/etc/php5/apache2/php.ini
+
 # clean up the script blocking dpkg from triggering daemon starts:
 rm -f $TGT_ROOT/usr/sbin/policy-rc.d
 
