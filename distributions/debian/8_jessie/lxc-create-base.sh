@@ -87,10 +87,12 @@ source $(dirname $0)/debian_defaults.inc.sh
 echo "127.0.1.1 $VM_HOSTNAME.local $VM_HOSTNAME" >> $TGT_ROOT/etc/hosts
 
 # prepare installation of packages requiring configuration:
-chroot $TGT_ROOT debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOTPW"
-chroot $TGT_ROOT debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOTPW"
-chroot $TGT_ROOT debconf-set-selections <<< "postfix postfix/mailname string $VM_HOSTNAME"
-chroot $TGT_ROOT debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Local only'"
+echo "
+mysql-server mysql-server/root_password password $MYSQL_ROOTPW
+mysql-server mysql-server/root_password_again password $MYSQL_ROOTPW
+postfix postfix/mailname string $VM_HOSTNAME
+postfix postfix/main_mailer_type string 'Local only'
+" | chroot $TGT_ROOT debconf-set-selections
 
 # prevent daemons from being started right after installation, which would fail
 # inside the chroot environment:
