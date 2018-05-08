@@ -132,6 +132,14 @@ chroot $TGT_ROOT eatmydata apt-get -y install \
     libx11-6 \
     libxft2
 
+# copy hucore DEB, install it and set up the license:
+HUCORE=$(cd $(dirname $0); ls huygens_*.deb)
+echo -e "\n---\nUsing [$HUCORE] package"
+cp -L $(dirname $0)/$HUCORE $TGT_ROOT/var/cache/apt/archives/
+chroot $TGT_ROOT eatmydata dpkg -i /var/cache/apt/archives/$HUCORE
+cat $(dirname $0)/huygensLicense >> $TGT_ROOT/usr/local/svi/huygensLicense
+echo -e "---\n"
+
 # explicitly set the timezone for PHP:
 sed -i 's,^;date.timezone =,date.timezone = "Europe/Zurich",' $TGT_ROOT/etc/php5/apache2/php.ini
 
