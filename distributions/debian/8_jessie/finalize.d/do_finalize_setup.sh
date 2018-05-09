@@ -2,11 +2,19 @@
 
 set -e
 
-cd $(dirname $0)
+BASEDIR=$(dirname $0)
+cd $BASEDIR
+source hrm_defaults.inc.sh
 
 for SCRIPT in finalize_setup__*.sh ; do
-	echo "--------------------------------------"
-	echo -e "Running [$SCRIPT]...\n"
-	bash -x $SCRIPT
-	echo -e "\n\n"
+	# make sure to return to the base dir every time, no matter what the
+	# sourced script has been doing inbetween:
+	cd $BASEDIR
+	echo "-----------------------------------------------"
+	echo "[$SCRIPT]"
+	echo "-----------------------------------------------"
+	set -x
+	source $SCRIPT
+	set +x
+	echo -e "\n"
 done
