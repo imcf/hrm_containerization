@@ -196,5 +196,6 @@ chroot $TGT_ROOT eatmydata apt-get clean
 echo
 echo "Use the following commands to start it and/or check its status:"
 echo "  # lxc-start --lxcpath=$BASEDIR --name=$VM_HOSTNAME -d"
+echo "  # lxc-attach --lxcpath=$BASEDIR --name=$VM_HOSTNAME"
 echo "  # lxc-ls --lxcpath=$BASEDIR --fancy"
 echo "  # ssh -i ${AUTH_KEYS/.pub/}  root@$VM_HOSTNAME"
