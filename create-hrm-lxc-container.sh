@@ -69,3 +69,9 @@ echo -e "----------------------------------\nLaunching [$RUN_SCRIPT]"
 bash $RUN_SCRIPT $VM_HOSTNAME $AUTH_KEYS
 echo -e "----------------------------------\nFinished [$RUN_SCRIPT]"
 echo "----------------------------------"
+echo
+echo "Use the following commands to start it and/or check its status:"
+echo "  # lxc-start --lxcpath=$LXCPATH --name=$VM_HOSTNAME -d"
+echo "  # lxc-attach --lxcpath=$LXCPATH --name=$VM_HOSTNAME"
+echo "  # lxc-ls --lxcpath=$LXCPATH --fancy"
+echo "  # ssh -i ${AUTH_KEYS/.pub/}  root@$VM_HOSTNAME"
