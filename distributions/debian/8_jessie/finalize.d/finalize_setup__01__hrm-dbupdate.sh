@@ -1,6 +1,1 @@
-#!/bin/bash
-
-set -e
-
-cd $HRM_SETUP
-php dbupdate.php
+../../../../finalize.d/finalize_setup__01__hrm-dbupdate.sh

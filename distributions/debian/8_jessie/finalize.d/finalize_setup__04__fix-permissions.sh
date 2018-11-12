@@ -1,6 +1,1 @@
-#!/bin/bash
-
-set -e
-
-# fix permissions on uploader directories:
-chmod g+w -v ${HRM_DATA}/.hrm_*
+../../../../finalize.d/finalize_setup__04__fix-permissions.sh
