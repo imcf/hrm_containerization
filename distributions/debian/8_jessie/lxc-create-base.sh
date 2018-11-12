@@ -160,9 +160,17 @@ chroot $TGT_ROOT cp -v $HRM_RESRC/systemd/hrmd.service /etc/systemd/system/
 #############################################################
 # prepare finalization scripts to be run after startup
 #############################################################
-mkdir -v $TGT_ROOT/home/hrm/_hrm_setup
-cp -vL $(dirname $0)/hrm_defaults.inc.sh $TGT_ROOT/home/hrm/_hrm_setup/
-cp -vL $(dirname $0)/finalize.d/* $TGT_ROOT/home/hrm/_hrm_setup/
+SETUP_SCRIPTS=$TGT_ROOT/home/hrm/_hrm_setup
+mkdir -v $SETUP_SCRIPTS
+cp -vL $(dirname $0)/hrm_defaults.inc.sh $SETUP_SCRIPTS/
+cp -vL $(dirname $0)/finalize.d/* $SETUP_SCRIPTS/
+echo "Scripts to finalize the HRM setup have been placed here:"
+echo "  > $SETUP_SCRIPTS"
+echo
+echo "Log in as user 'root', then just launch:"
+echo
+echo "  # bash $SETUP_SCRIPTS/do_finalize_setup.sh"
+echo
 
 
 #############################################################
