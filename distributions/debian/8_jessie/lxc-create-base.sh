@@ -33,6 +33,10 @@ echo BRIDGE_IP=$BRIDGE_IP
 echo -------------------- lxc-create command ------------------
 echo lxc-create --lxcpath=$BASEDIR --name=$VM_HOSTNAME -t $DISTRIBUTION -- --release=$SUITE
 echo
+if [ -n "$DRY_RUN" ] ; then
+    echo ">>> dry-run requested, stopping here! <<<"
+    exit 0
+fi
 lxc-create --lxcpath=$BASEDIR --name=$VM_HOSTNAME -t $DISTRIBUTION -- --release=$SUITE
 
 echo "deb $MIRROR $SUITE main" > $TGT_ROOT/etc/apt/sources.list

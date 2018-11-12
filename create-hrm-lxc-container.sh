@@ -32,6 +32,9 @@ if [ -z "$3" ] ; then
 fi
 SUITE=$3
 
+if [ "$4" == "--dry-run" ] ; then
+    export DRY_RUN="true"
+fi
 
 
 cd $(dirname $0)
