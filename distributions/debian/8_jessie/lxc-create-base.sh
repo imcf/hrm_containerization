@@ -12,52 +12,25 @@ usage_exit() {
     exit $1
 }
 
-HOST_DIST=$(lsb_release -i -s)
-HOST_REL=$(lsb_release -r -s)
-if [ "$HOST_DIST $HOST_REL" != "Ubuntu 17.04" ] ; then
-    cat << EOT
-NOTE: this script is meant for Ubuntu 17.04 (zesty), for other releases (or
-even other distributions) it might not work correctly!
-EOT
-    exit 100
-fi
-
-if [ -z "$1" ] ; then
-    echo "ERROR: No name given for container!"
-    usage_exit 1
-fi
-VM_HOSTNAME=$1
-
-if [ -z "$2" ] ; then
-    echo "ERROR: No file for 'authorized_keys' given!"
-    usage_exit 2
-fi
-AUTH_KEYS=$2
-
-export LANG=C
-export LC_ALL=C
-export DISTRIBUTION=debian
-export SUITE=jessie
-# export MIRROR="http://mirror.switch.ch/ftp/mirror/$DISTRIBUTION/"
-export MIRROR="http://ftp.halifax.rwth-aachen.de/$DISTRIBUTION/"
-
-BASEDIR="${LXCPATH:-/scratch/containers}"
-TGT_ROOT="$BASEDIR/$VM_HOSTNAME/rootfs"
-TGT_LOCALE="en_US.UTF-8"
-
+SCRIPTS_DIR="$(dirname $0)/lxc-create.d"
+echo "Processing scripts in [${SCRIPTS_DIR}/]..."
+for INC in ${SCRIPTS_DIR}/[0-9][0-9]_*\.inc\.sh ; do
+    echo "Sourcing [$INC]"
+    source $INC
+done
 
 #############################################################
 # LXC base setup
 #############################################################
 
-BRIDGE_IP=$(ip -o -f inet addr show lxcbr0 | sed -n 's,.*inet \([0-9\.]*\)/.*,\1,p')
-
+echo
+echo ------------------------ settings ------------------------
 echo SUITE=$SUITE
 echo VM_HOSTNAME=$VM_HOSTNAME
 echo TGT_ROOT=$TGT_ROOT
 echo TGT_LOCALE=$TGT_LOCALE
 echo BRIDGE_IP=$BRIDGE_IP
-echo
+echo -------------------- lxc-create command ------------------
 echo lxc-create --lxcpath=$BASEDIR --name=$VM_HOSTNAME -t $DISTRIBUTION -- --release=$SUITE
 echo
 lxc-create --lxcpath=$BASEDIR --name=$VM_HOSTNAME -t $DISTRIBUTION -- --release=$SUITE
